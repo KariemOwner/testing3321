@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Doe - Software Engineer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Language Toggle */
+        .lang-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            border: none;
+            background: #ecf0f1;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: #bdc3c7;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        .contact-info {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .contact-info a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.9;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: opacity 0.3s;
+        }
+
+        .contact-info a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        /* Navigation */
+        nav {
+            background: #34495e;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 15px 0;
+        }
+
+        nav ul li {
+            margin: 0 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #3498db;
+        }
+
+        /* Sections */
+        section {
+            padding: 60px 0;
+            background: white;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        section h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        section h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: #3498db;
+            margin: 10px auto 0;
+        }
+
+        /* About Section */
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .profile-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .profile-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-img-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+            font-weight: bold;
+        }
+
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .about-text p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .skill-tag {
+            background: #3498db;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Education Section */
+        .education-item {
+            margin-bottom: 30px;
+            padding-left: 20px;
+            border-left: 3px solid #3498db;
+        }
+
+        .education-item h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+        }
+
+        .education-item .school {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .education-item .date {
+            color: #3498db;
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+
+        .education-item p {
+            margin-top: 10px;
+        }
+
+        /* Projects Section */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 25px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .project-card h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .project-card .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .project-card .tech-stack span {
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .project-card p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .project-card a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: gap 0.3s;
+        }
+
+        .project-card a:hover {
+            text-decoration: underline;
+            gap: 10px;
+        }
+
+        /* Experience Section */
+        .experience-item {
+            margin-bottom: 30px;
+        }
+
+        .experience-item h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+        }
+
+        .experience-item .company {
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        .experience-item .date {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+
+        .experience-item ul {
+            margin-top: 15px;
+            margin-left: 20px;
+        }
+
+        .experience-item li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+        }
+
+        footer p {
+            opacity: 0.9;
+        }
+
+        /* Social Links in Footer */
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: #3498db;
+            transform: scale(1.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+            }
+
+            nav ul li {
+                margin: 5px 10px;
+            }
+
+            .about-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-img {
+                margin: 0 auto;
+            }
+
+            .lang-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 8px 12px;
+            }
+
+            .lang-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Toggle -->
+    <div class="lang-toggle">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="id">ID</button>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1 data-en="John Doe" data-id="John Doe">John Doe</h1>
+            <p data-en="Software Engineer | Full Stack Developer | Problem Solver" 
+               data-id="Software Engineer | Full Stack Developer | Problem Solver">Software Engineer | Full Stack Developer | Problem Solver</p>
+            <div class="contact-info">
+                <a href="mailto:john.doe@email.com">📧 <span data-en="john.doe@email.com" data-id="john.doe@email.com">john.doe@email.com</span></a>
+                <a href="tel:+1234567890">📱 <span data-en="+1 (234) 567-890" data-id="+62 812-3456-7890">+1 (234) 567-890</span></a>
+                <a href="https://github.com/johndoe" target="_blank">🐙 GitHub</a>
+                <a href="https://linkedin.com/in/johndoe" target="_blank">💼 LinkedIn</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#about" data-en="About" data-id="Tentang">About</a></li>
+                <li><a href="#education" data-en="Education" data-id="Pendidikan">Education</a></li>
+                <li><a href="#experience" data-en="Experience" data-id="Pengalaman">Experience</a></li>
+                <li><a href="#projects" data-en="Projects" data-id="Proyek">Projects</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- About Section -->
+        <section id="about">
+            <h2 data-en="About Me" data-id="Tentang Saya">About Me</h2>
+            <div class="about-content">
+                <div class="profile-img">
+                    <!-- Ganti src dengan path foto Anda, contoh: src="foto-anda.jpg" -->
+                    <!-- Jika tidak ada foto, akan tampil placeholder dengan inisial -->
+                    <img src="profile.jpg" alt="Profile Photo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="profile-img-placeholder" style="display: none;">JD</div>
+                </div>
+                <div class="about-text">
+                    <p data-en="Hello! I'm John Doe, a passionate software engineer with over 5 years of experience in building scalable web applications and solving complex technical challenges. I specialize in full-stack development with a focus on creating user-friendly and efficient solutions."
+                       data-id="Halo! Saya John Doe, seorang software engineer yang bersemangat dengan pengalaman lebih dari 5 tahun dalam membangun aplikasi web yang scalable dan menyelesaikan tantangan teknis yang kompleks. Saya spesialis dalam full-stack development dengan fokus pada pembuatan solusi yang user-friendly dan efisien.">Hello! I'm John Doe, a passionate software engineer with over 5 years of experience in building scalable web applications and solving complex technical challenges. I specialize in full-stack development with a focus on creating user-friendly and efficient solutions.</p>
+                    <p data-en="I thrive in collaborative environments and enjoy working on projects that make a positive impact. When I'm not coding, you can find me contributing to open-source projects, writing technical blogs, or exploring new technologies."
+                       data-id="Saya berkembang di lingkungan kolaboratif dan senang mengerjakan proyek yang memberikan dampak positif. Ketika tidak sedang coding, Anda dapat menemukan saya berkontribusi pada proyek open-source, menulis blog teknis, atau menjelajahi teknologi baru.">I thrive in collaborative environments and enjoy working on projects that make a positive impact. When I'm not coding, you can find me contributing to open-source projects, writing technical blogs, or exploring new technologies.</p>
+                    <p data-en="I'm always eager to learn and take on new challenges that push my boundaries as a developer."
+                       data-id="Saya selalu bersemangat untuk belajar dan mengambil tantangan baru yang mendorong batas kemampuan saya sebagai developer.">I'm always eager to learn and take on new challenges that push my boundaries as a developer.</p>
+                    <div class="skills">
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">TypeScript</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">Django</span>
+                        <span class="skill-tag">PostgreSQL</span>
+                        <span class="skill-tag">MongoDB</span>
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">CI/CD</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section id="education">
+            <h2 data-en="Education" data-id="Pendidikan">Education</h2>
+            <div class="education-item">
+                <h3 data-en="Master of Science in Computer Science" data-id="Magister Ilmu Komputer">Master of Science in Computer Science</h3>
+                <p class="school" data-en="Stanford University" data-id="Universitas Stanford">Stanford University</p>
+                <p class="date">2017 - 2019</p>
+                <p data-en="Specialized in Artificial Intelligence and Machine Learning. Graduated with Honors (GPA: 3.9/4.0). Thesis on 'Optimizing Neural Networks for Real-time Applications'."
+                   data-id="Spesialisasi dalam Kecerdasan Buatan dan Pembelajaran Mesin. Lulus dengan pujian (IPK: 3.9/4.0). Tesis tentang 'Mengoptimalkan Jaringan Saraf untuk Aplikasi Real-time'.">Specialized in Artificial Intelligence and Machine Learning. Graduated with Honors (GPA: 3.9/4.0). Thesis on "Optimizing Neural Networks for Real-time Applications".</p>
+            </div>
+            <div class="education-item">
+                <h3 data-en="Bachelor of Science in Computer Engineering" data-id="Sarjana Teknik Komputer">Bachelor of Science in Computer Engineering</h3>
+                <p class="school" data-en="University of California, Berkeley" data-id="Universitas California, Berkeley">University of California, Berkeley</p>
+                <p class="date">2013 - 2017</p>
+                <p data-en="Minor in Mathematics. Dean's List all semesters. President of the Computer Science Student Association."
+                   data-id="Konsentrasi minor dalam Matematika. Masuk dalam Dean's List semua semester. Presiden Asosiasi Mahasiswa Ilmu Komputer.">Minor in Mathematics. Dean's List all semesters. President of the Computer Science Student Association.</p>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience">
+            <h2 data-en="Work Experience" data-id="Pengalaman Kerja">Work Experience</h2>
+            <div class="experience-item">
+                <h3 data-en="Senior Software Engineer" data-id="Software Engineer Senior">Senior Software Engineer</h3>
+                <p class="company">Tech Innovators Inc., San Francisco, CA</p>
+                <p class="date">January 2022 - Present</p>
+                <ul>
+                    <li data-en="Led a team of 6 developers in building a microservices-based e-commerce platform serving 2M+ daily users"
+                        data-id="Memimpin tim yang terdiri dari 6 developer dalam membangun platform e-commerce berbasis microservices yang melayani 2 juta+ pengguna harian">Led a team of 6 developers in building a microservices-based e-commerce platform serving 2M+ daily users</li>
+                    <li data-en="Architected and implemented a real-time data processing pipeline reducing latency by 60%"
+                        data-id="Merancang dan mengimplementasikan pipeline pemrosesan data real-time yang mengurangi latensi sebesar 60%">Architected and implemented a real-time data processing pipeline reducing latency by 60%</li>
+                    <li data-en="Mentored junior developers and conducted code reviews to maintain high code quality standards"
+                        data-id="Membimbing developer junior dan melakukan code review untuk menjaga standar kualitas kode yang tinggi">Mentored junior developers and conducted code reviews to maintain high code quality standards</li>
+                    <li data-en="Collaborated with product managers to define technical requirements and project roadmaps"
+                        data-id="Berkolaborasi dengan manajer produk untuk menentukan persyaratan teknis dan peta jalan proyek">Collaborated with product managers to define technical requirements and project roadmaps</li>
+                </ul>
+            </div>
+            <div class="experience-item">
+                <h3 data-en="Software Engineer" data-id="Software Engineer">Software Engineer</h3>
+                <p class="company">Digital Solutions Corp., Seattle, WA</p>
+                <p class="date">June 2019 - December 2021</p>
+                <ul>
+                    <li data-en="Developed and maintained RESTful APIs using Node.js and Express for multiple client projects"
+                        data-id="Mengembangkan dan memelihara RESTful API menggunakan Node.js dan Express untuk berbagai proyek klien">Developed and maintained RESTful APIs using Node.js and Express for multiple client projects</li>
+                    <li data-en="Implemented responsive front-end interfaces using React and Redux"
+                        data-id="Mengimplementasikan antarmuka front-end yang responsif menggunakan React dan Redux">Implemented responsive front-end interfaces using React and Redux</li>
+                    <li data-en="Optimized database queries resulting in 40% improvement in application performance"
+                        data-id="Mengoptimalkan query database sehingga meningkatkan performa aplikasi sebesar 40%">Optimized database queries resulting in 40% improvement in application performance</li>
+                    <li data-en="Integrated third-party services including payment gateways and analytics tools"
+                        data-id="Mengintegrasikan layanan pihak ketiga termasuk gateway pembayaran dan alat analitik">Integrated third-party services including payment gateways and analytics tools</li>
+                </ul>
+            </div>
+            <div class="experience-item">
+                <h3 data-en="Software Engineering Intern" data-id="Magang Software Engineer">Software Engineering Intern</h3>
+                <p class="company">StartUp Labs, Palo Alto, CA</p>
+                <p class="date">May 2018 - August 2018</p>
+                <ul>
+                    <li data-en="Built a customer feedback analysis tool using Python and natural language processing"
+                        data-id="Membangun alat analisis umpan balik pelanggan menggunakan Python dan pemrosesan bahasa alami">Built a customer feedback analysis tool using Python and natural language processing</li>
+                    <li data-en="Created automated testing scripts that reduced manual testing time by 50%"
+                        data-id="Membuat skrip pengujian otomatis yang mengurangi waktu pengujian manual sebesar 50%">Created automated testing scripts that reduced manual testing time by 50%</li>
+                    <li data-en="Participated in agile development processes and daily stand-up meetings"
+                        data-id="Berpartisipasi dalam proses pengembangan agile dan rapat stand-up harian">Participated in agile development processes and daily stand-up meetings</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects">
+            <h2 data-en="Projects" data-id="Proyek">Projects</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <h3 data-en="E-Commerce Platform" data-id="Platform E-Commerce">E-Commerce Platform</h3>
+                    <div class="tech-stack">
+                        <span>React</span>
+                        <span>Node.js</span>
+                        <span>MongoDB</span>
+                        <span>Stripe</span>
+                    </div>
+                    <p data-en="A full-featured e-commerce platform with user authentication, product catalog, shopping cart, and secure payment integration. Supports inventory management and order tracking."
+                       data-id="Platform e-commerce lengkap dengan autentikasi pengguna, katalog produk, keranjang belanja, dan integrasi pembayaran yang aman. Mendukung manajemen inventaris dan pelacakan pesanan.">A full-featured e-commerce platform with user authentication, product catalog, shopping cart, and secure payment integration. Supports inventory management and order tracking.</p>
+                    <a href="#" target="_blank" data-en="View Project →" data-id="Lihat Proyek →">View Project →</a>
+                </div>
+                <div class="project-card">
+                    <h3 data-en="Task Management App" data-id="Aplikasi Manajemen Tugas">Task Management App</h3>
+                    <div class="tech-stack">
+                        <span>Vue.js</span>
+                        <span>Firebase</span>
+                        <span>Vuex</span>
+                        <span>Tailwind CSS</span>
+                    </div>
+                    <p data-en="A collaborative task management application with real-time updates, team workspaces, drag-and-drop functionality, and progress tracking. Built for remote teams."
+                       data-id="Aplikasi manajemen tugas kolaboratif dengan pembaruan real-time, ruang kerja tim, fungsi drag-and-drop, dan pelacakan progres. Dibangun untuk tim jarak jauh.">A collaborative task management application with real-time updates, team workspaces, drag-and-drop functionality, and progress tracking. Built for remote teams.</p>
+                    <a href="#" target="_blank" data-en="View Project →" data-id="Lihat Proyek →">View Project →</a>
+                </div>
+                <div class="project-card">
+                    <h3 data-en="Weather Dashboard" data-id="Dasbor Cuaca">Weather Dashboard</h3>
+                    <div class="tech-stack">
+                        <span>Python</span>
+                        <span>Django</span>
+                        <span>PostgreSQL</span>
+                        <span>Chart.js</span>
+                    </div>
+                    <p data-en="An interactive weather dashboard that aggregates data from multiple weather APIs. Features include historical data visualization, forecasts, and location-based alerts."
+                       data-id="Dasbor cuaca interaktif yang mengumpulkan data dari berbagai API cuaca. Fitur termasuk visualisasi data historis, prakiraan, dan peringatan berbasis lokasi.">An interactive weather dashboard that aggregates data from multiple weather APIs. Features include historical data visualization, forecasts, and location-based alerts.</p>
+                    <a href="#" target="_blank" data-en="View Project →" data-id="Lihat Proyek →">View Project →</a>
+                </div>
+                <div class="project-card">
+                    <h3 data-en="Code Collaboration Tool" data-id="Alat Kolaborasi Kode">Code Collaboration Tool</h3>
+                    <div class="tech-stack">
+                        <span>React</span>
+                        <span>Socket.io</span>
+                        <span>Express</span>
+                        <span>Monaco Editor</span>
+                    </div>
+                    <p data-en="A real-time code collaboration platform enabling multiple developers to edit code simultaneously. Includes video chat, syntax highlighting, and version control integration."
+                       data-id="Platform kolaborasi kode real-time yang memungkinkan beberapa developer mengedit kode secara bersamaan. Termasuk obrolan video, penyorotan sintaks, dan integrasi kontrol versi.">A real-time code collaboration platform enabling multiple developers to edit code simultaneously. Includes video chat, syntax highlighting, and version control integration.</p>
+                    <a href="#" target="_blank" data-en="View Project →" data-id="Lihat Proyek →">View Project →</a>
+                </div>
+                <div class="project-card">
+                    <h3 data-en="Machine Learning Model Deployer" data-id="PendePLOY Model Machine Learning">Machine Learning Model Deployer</h3>
+                    <div class="tech-stack">
+                        <span>Python</span>
+                        <span>Flask</span>
+                        <span>Docker</span>
+                        <span>AWS</span>
+                    </div>
+                    <p data-en="An automated ML model deployment pipeline that containerizes models and deploys them to cloud infrastructure. Includes monitoring, logging, and A/B testing capabilities."
+                       data-id="Pipeline deployment model ML otomatis yang mengkontainerisasi model dan mendeploy mereka ke infrastruktur cloud. Termasuk kemampuan monitoring, logging, dan pengujian A/B.">An automated ML model deployment pipeline that containerizes models and deploys them to cloud infrastructure. Includes monitoring, logging, and A/B testing capabilities.</p>
+                    <a href="#" target="_blank" data-en="View Project →" data-id="Lihat Proyek →">View Project →</a>
+                </div>
+                <div class="project-card">
+                    <h3 data-en="Social Media Analytics" data-id="Analitik Media Sosial">Social Media Analytics</h3>
+                    <div class="tech-stack">
+                        <span>Next.js</span>
+                        <span>GraphQL</span>
+                        <span>Redis</span>
+                        <span>D3.js</span>
+                    </div>
+                    <p data-en="A comprehensive analytics dashboard for social media metrics. Tracks engagement, audience growth, and content performance across multiple platforms with interactive visualizations."
+                       data-id="Dasbor analitik komprehensif untuk metrik media sosial. Melacak keterlibatan, pertumbuhan audiens, dan performa konten di berbagai platform dengan visualisasi interaktif.">A comprehensive analytics dashboard for social media metrics. Tracks engagement, audience growth, and content performance across multiple platforms with interactive visualizations.</p>
+                    <a href="#" target="_blank" data-en="View Project →" data-id="Lihat Proyek →">View Project →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p data-en="© 2024 John Doe. All rights reserved." data-id="© 2024 John Doe. Hak cipta dilindungi.">&copy; 2024 John Doe. All rights reserved.</p>
+            <p data-en="Built with ❤️ using HTML & CSS" data-id="Dibuat dengan ❤️ menggunakan HTML & CSS">Built with ❤️ using HTML & CSS</p>
+            <div class="social-links">
+                <a href="mailto:john.doe@email.com" title="Email">📧</a>
+                <a href="https://github.com/johndoe" target="_blank" title="GitHub">🐙</a>
+                <a href="https://linkedin.com/in/johndoe" target="_blank" title="LinkedIn">💼</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Language Toggle -->
+    <script>
+        // Get all language buttons and translatable elements
+        const langButtons = document.querySelectorAll('.lang-btn');
+        const translatableElements = document.querySelectorAll('[data-en][data-id]');
+
+        // Function to set language
+        function setLanguage(lang) {
+            // Update active button state
+            langButtons.forEach(btn => {
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Update all translatable elements
+            translatableElements.forEach(el => {
+                if (lang === 'id') {
+                    el.textContent = el.dataset.id;
+                } else {
+                    el.textContent = el.dataset.en;
+                }
+            });
+
+            // Save preference to localStorage
+            localStorage.setItem('preferredLang', lang);
+        }
+
+        // Add click event listeners to language buttons
+        langButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setLanguage(btn.dataset.lang);
+            });
+        });
+
+        // Check for saved language preference or default to English
+        const savedLang = localStorage.getItem('preferredLang') || 'en';
+        setLanguage(savedLang);
+    </script>
+</body>
+</html>
