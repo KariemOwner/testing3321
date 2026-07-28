@@ -38,8 +38,8 @@
 
         /* Custom Cursor - Desktop only */
         @media (hover: hover) and (pointer: fine) {
-            body {
-                cursor: none;
+            body, a, button, input, textarea, select, [role="button"], .cursor-hover {
+                cursor: none !important;
             }
 
             .cursor {
@@ -49,7 +49,7 @@
                 border-radius: 50%;
                 position: fixed;
                 pointer-events: none;
-                z-index: 99999;
+                z-index: 999999;
                 transition: transform 0.1s ease, background 0.3s ease;
                 mix-blend-mode: difference;
             }
@@ -61,7 +61,7 @@
                 border-radius: 50%;
                 position: fixed;
                 pointer-events: none;
-                z-index: 99999;
+                z-index: 999999;
             }
 
             .cursor.hover {
@@ -73,6 +73,10 @@
         @media (hover: none) or (pointer: coarse) {
             .cursor, .cursor-dot {
                 display: none !important;
+            }
+            
+            body, a, button, input, textarea, select, [role="button"] {
+                cursor: auto !important;
             }
         }
 
@@ -1444,17 +1448,17 @@
             right: 30px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px 20px;
+            gap: 12px;
+            padding: 14px 24px;
             background: var(--gradient-3);
             border: none;
             border-radius: 50px;
             color: white;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
             z-index: 998;
-            box-shadow: 0 5px 25px rgba(79, 172, 254, 0.5);
+            box-shadow: 0 8px 30px rgba(79, 172, 254, 0.6);
             transition: all 0.3s ease;
             overflow: hidden;
         }
@@ -1475,18 +1479,18 @@
         }
 
         .ai-chat-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 10px 35px rgba(79, 172, 254, 0.7);
+            transform: translateY(-5px) scale(1.08);
+            box-shadow: 0 15px 40px rgba(79, 172, 254, 0.8);
         }
 
         .ai-chat-btn i {
-            font-size: 1.3rem;
-            animation: pulse 2s ease-in-out infinite;
+            font-size: 1.4rem;
+            animation: aiPulse 2s ease-in-out infinite;
         }
 
         @keyframes aiPulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
         }
 
         /* KarAI Modal */
@@ -1571,6 +1575,27 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            /* Custom scrollbar for better UX */
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--dark-light);
+        }
+
+        .karai-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .karai-messages::-webkit-scrollbar-track {
+            background: var(--dark-light);
+            border-radius: 4px;
+        }
+
+        .karai-messages::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .karai-messages::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
         }
 
         .karai-message {
@@ -1708,8 +1733,9 @@
             .ai-chat-btn {
                 bottom: 80px;
                 right: 20px;
-                padding: 10px 15px;
-                font-size: 0.9rem;
+                padding: 12px 18px;
+                font-size: 0.85rem;
+                gap: 8px;
             }
 
             .ai-chat-btn span {
@@ -1717,23 +1743,50 @@
             }
 
             .ai-chat-btn {
-                width: 55px;
-                height: 55px;
+                width: 60px;
+                height: 60px;
                 padding: 0;
                 justify-content: center;
+                border-radius: 50%;
+                box-shadow: 0 6px 25px rgba(79, 172, 254, 0.7);
+            }
+
+            .ai-chat-btn:hover {
+                transform: translateY(-3px) scale(1.1);
+            }
+
+            .ai-chat-btn i {
+                font-size: 1.6rem;
             }
 
             .karai-content {
                 width: 95%;
                 height: 90vh;
+                max-height: 85vh;
             }
 
             .karai-header h2 {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
 
             .message-content {
-                max-width: 80%;
+                max-width: 85%;
+                padding: 10px 14px;
+                font-size: 0.9rem;
+            }
+
+            .karai-input-area {
+                padding: 15px;
+            }
+
+            .karai-input-area input {
+                font-size: 0.9rem;
+                padding: 10px 16px;
+            }
+
+            .karai-input-area button {
+                width: 45px;
+                height: 45px;
             }
         }
     </style>
@@ -2128,7 +2181,7 @@
 
     <!-- AI Chat Button -->
     <button class="ai-chat-btn" id="aiChatBtn">
-        <i class="fas fa-robot"></i>
+        <i class="fas fa-comments"></i>
         <span data-en="AI Chat" data-id="Obrolan AI">AI Chat</span>
     </button>
 
@@ -2136,7 +2189,7 @@
     <div class="karai-modal" id="karaiModal">
         <div class="karai-content">
             <div class="karai-header">
-                <h2><i class="fas fa-robot"></i> KarAI</h2>
+                <h2><i class="fas fa-robot"></i> KarAI - AI Demo Prototype</h2>
                 <button class="karai-close" id="karaiClose">
                     <i class="fas fa-times"></i>
                 </button>
@@ -2146,7 +2199,7 @@
                     <div class="karai-message karai-bot">
                         <div class="message-avatar"><i class="fas fa-robot"></i></div>
                         <div class="message-content">
-                            <p data-en="Hello! I'm KarAI, your personal AI assistant. How can I help you today?" data-id="Halo! Saya KarAI, asisten AI pribadi Anda. Ada yang bisa saya bantu hari ini?">Hello! I'm KarAI, your personal AI assistant. How can I help you today?</p>
+                            <p data-en="Hello! I'm KarAI, an AI Demo Prototype powered by Qwen from Alibaba. How can I help you today?" data-id="Halo! Saya KarAI, AI Demo Prototype yang menggunakan Otak Qwen dari Alibaba. Ada yang bisa saya bantu hari ini?">Hello! I'm KarAI, an AI Demo Prototype powered by Qwen from Alibaba. How can I help you today?</p>
                         </div>
                     </div>
                 </div>
@@ -2184,21 +2237,18 @@
 
         setLanguage(currentLang);
 
-        // Custom Cursor
+        // Custom Cursor - Initial setup (will be enhanced later)
         const cursor = document.querySelector('.cursor');
         const cursorDot = document.querySelector('.cursor-dot');
 
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            cursorDot.style.left = e.clientX + 'px';
-            cursorDot.style.top = e.clientY + 'px';
-        });
-
-        document.querySelectorAll('a, button, .skill-tag, .project-link').forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-        });
+        if (cursor && cursorDot) {
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                cursorDot.style.left = e.clientX + 'px';
+                cursorDot.style.top = e.clientY + 'px';
+            });
+        }
 
         // Loading Screen
         window.addEventListener('load', () => {
@@ -2548,47 +2598,126 @@
         const karaiSend = document.getElementById('karaiSend');
         const karaiMessages = document.getElementById('karaiMessages');
 
+        // Chat history stored in DOM (cleared when modal closes)
+        let chatActive = false;
+
         // Open KarAI Modal
         aiChatBtn.addEventListener('click', () => {
             karaiModal.classList.add('active');
+            chatActive = true;
             setTimeout(() => karaiInput.focus(), 300);
         });
 
-        // Close KarAI Modal
+        // Close KarAI Modal - Clear all chat history
         karaiClose.addEventListener('click', () => {
             karaiModal.classList.remove('active');
+            chatActive = false;
+            // Clear all messages and reset to initial greeting
+            setTimeout(() => {
+                karaiMessages.innerHTML = `
+                    <div class="karai-message karai-bot">
+                        <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                        <div class="message-content">
+                            <p data-en="Hello! I'm KarAI, an AI Demo Prototype powered by Qwen from Alibaba. How can I help you today?" data-id="Halo! Saya KarAI, AI Demo Prototype yang menggunakan Otak Qwen dari Alibaba. Ada yang bisa saya bantu hari ini?">${currentLang === 'id' ? 'Halo! Saya KarAI, AI Demo Prototype yang menggunakan Otak Qwen dari Alibaba. Ada yang bisa saya bantu hari ini?' : "Hello! I'm KarAI, an AI Demo Prototype powered by Qwen from Alibaba. How can I help you today?"}</p>
+                        </div>
+                    </div>
+                `;
+            }, 300);
         });
 
-        // Close on outside click
+        // Close on outside click - Also clear chat history
         karaiModal.addEventListener('click', (e) => {
             if (e.target === karaiModal) {
                 karaiModal.classList.remove('active');
+                chatActive = false;
+                // Clear all messages and reset to initial greeting
+                setTimeout(() => {
+                    karaiMessages.innerHTML = `
+                        <div class="karai-message karai-bot">
+                            <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                            <div class="message-content">
+                                <p data-en="Hello! I'm KarAI, an AI Demo Prototype powered by Qwen from Alibaba. How can I help you today?" data-id="Halo! Saya KarAI, AI Demo Prototype yang menggunakan Otak Qwen dari Alibaba. Ada yang bisa saya bantu hari ini?">${currentLang === 'id' ? 'Halo! Saya KarAI, AI Demo Prototype yang menggunakan Otak Qwen dari Alibaba. Ada yang bisa saya bantu hari ini?' : "Hello! I'm KarAI, an AI Demo Prototype powered by Qwen from Alibaba. How can I help you today?"}</p>
+                            </div>
+                        </div>
+                    `;
+                }, 300);
             }
         });
 
-        // AI Responses (Simple rule-based responses)
-        const aiResponses = {
-            'hello': { en: "Hello! How can I assist you today?", id: "Halo! Ada yang bisa saya bantu hari ini?" },
-            'hi': { en: "Hi there! What's on your mind?", id: "Hai! Ada yang ingin kamu bicarakan?" },
-            'help': { en: "I'm here to help! Ask me anything about Ikram Rezaul's portfolio.", id: "Saya di sini untuk membantu! Tanyakan apa saja tentang portofolio Ikram Rezaul." },
-            'about': { en: "Ikram Rezaul is a TKJ student and AI developer passionate about technology.", id: "Ikram Rezaul adalah siswa TKJ dan pengembang AI yang bersemangat tentang teknologi." },
-            'contact': { en: "You can contact Ikram via email at ikram.rezaul10@smk.belajar.id or WhatsApp at +62 881-2901-627", id: "Kamu bisa menghubungi Ikram via email di ikram.rezaul10@smk.belajar.id atau WhatsApp di +62 881-2901-627" },
-            'projects': { en: "Ikram has worked on various projects including AI chatbots, web development, and PC building.", id: "Ikram telah mengerjakan berbagai proyek termasuk chatbot AI, pengembangan web, dan perakitan PC." },
-            'thanks': { en: "You're welcome! Feel free to ask more questions.", id: "Sama-sama! Jangan ragu untuk bertanya lebih lanjut." },
-            'bye': { en: "Goodbye! Have a great day!", id: "Selamat tinggal! Semoga harimu menyenangkan!" }
+        // Qwen API Configuration
+        const QWEN_API_URL = 'https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
+        const QWEN_MODEL = 'qwen-flash';
+        
+        // Note: For security reasons, API key should be handled server-side in production
+        // This is a demo prototype - replace with your actual API key or use a backend proxy
+        const QWEN_API_KEY = ''; // Add your DashScope API key here
+
+        async function getQwenResponse(message, lang) {
+            const systemPrompt = lang === 'id' 
+                ? 'Anda adalah KarAI, AI Demo Prototype yang menggunakan Otak Qwen Alibaba. Anda adalah asisten AI yang ramah dan membantu. Jawablah dengan singkat, jelas, dan dalam bahasa Indonesia.'
+                : 'You are KarAI, an AI Demo Prototype powered by Qwen from Alibaba. You are a friendly and helpful AI assistant. Respond briefly and clearly in English.';
+
+            // If no API key is set, use fallback responses
+            if (!QWEN_API_KEY) {
+                return getFallbackResponse(message, lang);
+            }
+
+            try {
+                const response = await fetch(QWEN_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${QWEN_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: QWEN_MODEL,
+                        input: {
+                            messages: [
+                                { role: 'system', content: systemPrompt },
+                                { role: 'user', content: message }
+                            ]
+                        },
+                        parameters: {
+                            max_tokens: 500,
+                            temperature: 0.7
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.output?.text || getFallbackResponse(message, lang);
+            } catch (error) {
+                console.error('Qwen API Error:', error);
+                return getFallbackResponse(message, lang);
+            }
+        }
+
+        // Fallback responses when API is not available
+        const fallbackResponses = {
+            hello: { en: "Hello! How can I assist you today?", id: "Halo! Ada yang bisa saya bantu hari ini?" },
+            hi: { en: "Hi there! What's on your mind?", id: "Hai! Ada yang ingin kamu bicarakan?" },
+            help: { en: "I'm here to help! Ask me anything about Ikram Rezaul's portfolio.", id: "Saya di sini untuk membantu! Tanyakan apa saja tentang portofolio Ikram Rezaul." },
+            about: { en: "Ikram Rezaul is a TKJ student and AI developer passionate about technology.", id: "Ikram Rezaul adalah siswa TKJ dan pengembang AI yang bersemangat tentang teknologi." },
+            contact: { en: "You can contact Ikram via email at ikram.rezaul10@smk.belajar.id or WhatsApp at +62 881-2901-627", id: "Kamu bisa menghubungi Ikram via email di ikram.rezaul10@smk.belajar.id atau WhatsApp di +62 881-2901-627" },
+            projects: { en: "Ikram has worked on various projects including AI chatbots, web development, and PC building.", id: "Ikram telah mengerjakan berbagai proyek termasuk chatbot AI, pengembangan web, dan perakitan PC." },
+            thanks: { en: "You're welcome! Feel free to ask more questions.", id: "Sama-sama! Jangan ragu untuk bertanya lebih lanjut." },
+            bye: { en: "Goodbye! Have a great day!", id: "Selamat tinggal! Semoga harimu menyenangkan!" }
         };
 
-        function getAIResponse(message, lang) {
+        function getFallbackResponse(message, lang) {
             const lowerMsg = message.toLowerCase();
-            for (const key in aiResponses) {
+            for (const key in fallbackResponses) {
                 if (lowerMsg.includes(key)) {
-                    return aiResponses[key][lang];
+                    return fallbackResponses[key][lang];
                 }
             }
-            // Default response
             return lang === 'en' 
-                ? "Thank you for your message! I'm a demo AI assistant. For real inquiries, please contact Ikram directly."
-                : "Terima kasih atas pesan Anda! Saya asisten AI demo. Untuk pertanyaan nyata, silakan hubungi Ikram langsung.";
+                ? "Thank you for your message! I'm KarAI, a demo AI assistant powered by Qwen from Alibaba. For real inquiries, please contact Ikram directly."
+                : "Terima kasih atas pesan Anda! Saya KarAI, asisten AI demo yang menggunakan Qwen dari Alibaba. Untuk pertanyaan nyata, silakan hubungi Ikram langsung.";
         }
 
         function addMessage(text, isUser) {
@@ -2631,12 +2760,11 @@
             // Show typing indicator
             showTyping();
 
-            // Simulate AI response delay
-            setTimeout(() => {
+            // Get AI response using Qwen API (or fallback)
+            getQwenResponse(message, currentLang).then(response => {
                 hideTyping();
-                const response = getAIResponse(message, currentLang);
                 addMessage(response, false);
-            }, 1000 + Math.random() * 1000);
+            });
         }
 
         // Send on button click
@@ -2668,6 +2796,34 @@
                 p.textContent = p.getAttribute(`data-${lang}`);
             });
         };
+
+        // Custom Cursor - Enhanced to prevent Windows cursor from appearing
+        const cursor = document.querySelector('.cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+
+        if (cursor && cursorDot) {
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+                cursorDot.style.left = e.clientX + 'px';
+                cursorDot.style.top = e.clientY + 'px';
+            });
+
+            // Add cursor-hover class to all interactive elements
+            const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, [role="button"], .skill-tag, .project-link, .lang-btn, .logo, .mobile-menu-btn, .scroll-top, .ai-chat-btn, .karai-close, .karai-input-area button');
+            
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.classList.add('hover');
+                    // Ensure native cursor is hidden
+                    el.style.cursor = 'none !important';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.classList.remove('hover');
+                    el.style.cursor = '';
+                });
+            });
+        }
     </script>
 </body>
 </html>
