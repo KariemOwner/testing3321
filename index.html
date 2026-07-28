@@ -2166,21 +2166,28 @@
     </div>
 
     <!-- Load config first to inject environment variables -->
-    <script>
-        // Inject environment variables for Vercel deployment
-        // The API key will be available via window.__ENV__
-        // IMPORTANT: Make sure you set VITE_DASHSCOPE_API_KEY in Vercel Environment Variables
-        if (typeof process !== 'undefined' && process.env) {
-            window.__ENV__ = {
-                VITE_DASHSCOPE_API_KEY: process.env.VITE_DASHSCOPE_API_KEY || ''
-            };
-        } else if (typeof import.meta !== 'undefined' && import.meta.env) {
-            window.__ENV__ = {
-                VITE_DASHSCOPE_API_KEY: import.meta.env.VITE_DASHSCOPE_API_KEY || ''
-            };
-        } else {
+    <script type="module">
+        // Initialize window.__ENV__ object
+        if (!window.__ENV__) {
             window.__ENV__ = {};
         }
+        
+        // For Vercel deployment: Set DASHSCOPE_API_KEY as an environment variable in Vercel Dashboard
+        // Go to: Project Settings > Environment Variables > Add DASHSCOPE_API_KEY
+        // Note: This static site reads the API key at runtime from window.__ENV__
+        
+        // Import config to load API key
+        import('./config.js').then(module => {
+            // Update window.__ENV__ with the API key from config.js
+            if (module.QWEN_API_KEY) {
+                window.__ENV__.DASHSCOPE_API_KEY = module.QWEN_API_KEY;
+                console.log('KarAI: ✓ API key loaded successfully');
+            } else {
+                console.log('KarAI: ⚠ No API key found - using fallback responses only');
+            }
+        }).catch(err => {
+            console.log('KarAI: Config module load error:', err.message);
+        });
     </script>
 
     <script>
@@ -2604,20 +2611,28 @@
         });
 
         // Qwen API Configuration - Loaded from config.js
-        // API key is read from environment variables (VITE_DASHSCOPE_API_KEY)
+        // API key is read from environment variables (DASHSCOPE_API_KEY)
         const QWEN_API_URL = 'https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
         const QWEN_MODEL = 'qwen-flash';
         
-        // Get API key from window.__ENV__ (injected by Vercel) or fallback to empty string
-        const QWEN_API_KEY = window?.__ENV__?.VITE_DASHSCOPE_API_KEY || '';
+        // Get API key from window.__ENV__ (populated by config.js module import)
+        // Wait a bit for the module to load the API key
+        let QWEN_API_KEY = window?.__ENV__?.DASHSCOPE_API_KEY || '';
+        
+        // Debug logging
+        console.log('KarAI: Initial API Key status:', QWEN_API_KEY ? 'Present' : 'Not found');
 
         async function getQwenResponse(message, lang) {
+            // Re-check API key at call time (in case it was loaded asynchronously)
+            const currentApiKey = window?.__ENV__?.DASHSCOPE_API_KEY || QWEN_API_KEY;
+            
             const systemPrompt = lang === 'id' 
                 ? 'Anda adalah KarAI, AI Demo Prototype yang menggunakan Otak Qwen Alibaba. Anda adalah asisten AI yang ramah dan membantu. Jawablah dengan singkat, jelas, dan dalam bahasa Indonesia.'
                 : 'You are KarAI, an AI Demo Prototype powered by Qwen from Alibaba. You are a friendly and helpful AI assistant. Respond briefly and clearly in English.';
 
             // If no API key is set, use fallback responses
-            if (!QWEN_API_KEY) {
+            if (!currentApiKey) {
+                console.log('KarAI: No API key found, using fallback responses');
                 return getFallbackResponse(message, lang);
             }
 
@@ -2626,7 +2641,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${QWEN_API_KEY}`
+                        'Authorization': `Bearer ${currentApiKey}`
                     },
                     body: JSON.stringify({
                         model: QWEN_MODEL,
@@ -2655,28 +2670,44 @@
             }
         }
 
-        // Fallback responses when API is not available
+        // Fallback responses when API is not available - expanded keyword matching
         const fallbackResponses = {
             hello: { en: "Hello! How can I assist you today?", id: "Halo! Ada yang bisa saya bantu hari ini?" },
             hi: { en: "Hi there! What's on your mind?", id: "Hai! Ada yang ingin kamu bicarakan?" },
+            hey: { en: "Hey! What's up?", id: "Hei! Apa kabar?" },
             help: { en: "I'm here to help! Ask me anything about Ikram Rezaul's portfolio.", id: "Saya di sini untuk membantu! Tanyakan apa saja tentang portofolio Ikram Rezaul." },
             about: { en: "Ikram Rezaul is a TKJ student and AI developer passionate about technology.", id: "Ikram Rezaul adalah siswa TKJ dan pengembang AI yang bersemangat tentang teknologi." },
+            who: { en: "Ikram Rezaul is a TKJ student and AI developer passionate about technology.", id: "Ikram Rezaul adalah siswa TKJ dan pengembang AI yang bersemangat tentang teknologi." },
             contact: { en: "You can contact Ikram via email at ikram.rezaul10@smk.belajar.id or WhatsApp at +62 881-2901-627", id: "Kamu bisa menghubungi Ikram via email di ikram.rezaul10@smk.belajar.id atau WhatsApp di +62 881-2901-627" },
+            whatsapp: { en: "You can contact Ikram via WhatsApp at +62 881-2901-627", id: "Kamu bisa menghubungi Ikram via WhatsApp di +62 881-2901-627" },
+            email: { en: "You can contact Ikram via email at ikram.rezaul10@smk.belajar.id", id: "Kamu bisa menghubungi Ikram via email di ikram.rezaul10@smk.belajar.id" },
             projects: { en: "Ikram has worked on various projects including AI chatbots, web development, and PC building.", id: "Ikram telah mengerjakan berbagai proyek termasuk chatbot AI, pengembangan web, dan perakitan PC." },
+            project: { en: "Ikram has worked on various projects including AI chatbots, web development, and PC building.", id: "Ikram telah mengerjakan berbagai proyek termasuk chatbot AI, pengembangan web, dan perakitan PC." },
+            portfolio: { en: "Ikram has worked on various projects including AI chatbots, web development, and PC building.", id: "Ikram telah mengerjakan berbagai proyek termasuk chatbot AI, pengembangan web, dan perakitan PC." },
             thanks: { en: "You're welcome! Feel free to ask more questions.", id: "Sama-sama! Jangan ragu untuk bertanya lebih lanjut." },
-            bye: { en: "Goodbye! Have a great day!", id: "Selamat tinggal! Semoga harimu menyenangkan!" }
+            thank: { en: "You're welcome! Feel free to ask more questions.", id: "Sama-sama! Jangan ragu untuk bertanya lebih lanjut." },
+            bye: { en: "Goodbye! Have a great day!", id: "Selamat tinggal! Semoga harimu menyenangkan!" },
+            goodbye: { en: "Goodbye! Have a great day!", id: "Selamat tinggal! Semoga harimu menyenangkan!" },
+            name: { en: "My name is KarAI, and I'm an AI assistant for Ikram Rezaul's portfolio.", id: "Nama saya KarAI, dan saya adalah asisten AI untuk portofolio Ikram Rezaul." },
+            karai: { en: "Yes, I'm KarAI! How can I help you?", id: "Ya, saya KarAI! Ada yang bisa saya bantu?" },
+            student: { en: "Ikram is a TKJ (Computer Network Engineering) student with a passion for AI and web development.", id: "Ikram adalah siswa TKJ (Teknik Komputer dan Jaringan) yang memiliki semangat dalam AI dan pengembangan web." },
+            skill: { en: "Ikram's skills include JavaScript, Python, HTML/CSS, React, Vue.js, Node.js, and AI development.", id: "Keahlian Ikram meliputi JavaScript, Python, HTML/CSS, React, Vue.js, Node.js, dan pengembangan AI." }
         };
 
         function getFallbackResponse(message, lang) {
             const lowerMsg = message.toLowerCase();
+            
+            // Check for common keywords and provide contextual responses
             for (const key in fallbackResponses) {
                 if (lowerMsg.includes(key)) {
                     return fallbackResponses[key][lang];
                 }
             }
+            
+            // Default response - make it more conversational
             return lang === 'en' 
-                ? "Thank you for your message! I'm KarAI, a demo AI assistant powered by Qwen from Alibaba. For real inquiries, please contact Ikram directly."
-                : "Terima kasih atas pesan Anda! Saya KarAI, asisten AI demo yang menggunakan Qwen dari Alibaba. Untuk pertanyaan nyata, silakan hubungi Ikram langsung.";
+                ? "I'm KarAI, your AI assistant! I can help you with information about Ikram Rezaul's portfolio, projects, and contact details. What would you like to know?"
+                : "Saya KarAI, asisten AI Anda! Saya bisa membantu Anda dengan informasi tentang portofolio, proyek, dan kontak Ikram Rezaul. Apa yang ingin Anda ketahui?";
         }
 
         function addMessage(text, isUser) {
