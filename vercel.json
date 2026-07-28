@@ -1,5 +1,7 @@
 {
-  "env": {
-    "DASHSCOPE_API_KEY": "@dashscope-api-key"
+  "build": {
+    "env": {
+      "DASHSCOPE_API_KEY": ""
+    }
   }
 }
