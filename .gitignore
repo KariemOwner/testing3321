@@ -1,1 +1,1 @@
-Nothing needs to be added to the .gitignore file based on the provided changes. The added and modified files (SETUP_INSTRUCTIONS.md, config.js, vercel.json, index.html) are all source/config files that should be tracked by git.
+Nothing needs to be added to .gitignore since only a configuration file (vercel.json) was modified and no build artifacts, dependencies, or temporary files were detected in the changes.
