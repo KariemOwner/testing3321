@@ -136,29 +136,19 @@
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: var(--gradient-1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
             cursor: pointer;
             position: relative;
+            display: flex;
+            align-items: center;
         }
 
-        .logo::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 3px;
-            background: var(--gradient-1);
-            transition: width 0.3s ease;
+        .logo img {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .logo:hover::after {
-            width: 100%;
+        .logo:hover img {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
         }
 
         .nav-links {
@@ -1763,7 +1753,9 @@
 
     <!-- Navigation -->
     <nav>
-        <div class="logo">JD</div>
+        <div class="logo">
+            <img src="https://yt3.googleusercontent.com/hk5ZzEmNTuQ8ReQsLC0dwgWzyascY76ifY9kMq8MyPPW6IcPlqwiBYsGWXKJG91xc8EbGJGdRg=s900-c-k-c0x00ffffff-no-rj" alt="Kariem Logo" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+        </div>
         <ul class="nav-links">
             <li><a href="#home" data-en="Home" data-id="Beranda">Home</a></li>
             <li><a href="#about" data-en="About" data-id="Tentang">About</a></li>
@@ -2474,12 +2466,15 @@
 
         // Glitch Effect on Logo Hover
         const logo = document.querySelector('.logo');
-        logo.addEventListener('mouseenter', () => {
-            logo.style.animation = 'glitch 0.3s ease';
-            setTimeout(() => {
-                logo.style.animation = '';
-            }, 300);
-        });
+        const logoImg = logo.querySelector('img');
+        if (logoImg) {
+            logoImg.addEventListener('mouseenter', () => {
+                logoImg.style.animation = 'glitch 0.3s ease';
+                setTimeout(() => {
+                    logoImg.style.animation = '';
+                }, 300);
+            });
+        }
 
         // Add glitch keyframes
         const style = document.createElement('style');
