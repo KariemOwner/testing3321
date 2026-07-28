@@ -2168,19 +2168,12 @@
     <!-- Load config first to inject environment variables -->
     <script>
         // Inject environment variables for Vercel deployment
-        // The API key will be available via window.__ENV__
-        // IMPORTANT: Make sure you set VITE_DASHSCOPE_API_KEY in Vercel Environment Variables
-        if (typeof process !== 'undefined' && process.env) {
-            window.__ENV__ = {
-                VITE_DASHSCOPE_API_KEY: process.env.VITE_DASHSCOPE_API_KEY || ''
-            };
-        } else if (typeof import.meta !== 'undefined' && import.meta.env) {
-            window.__ENV__ = {
-                VITE_DASHSCOPE_API_KEY: import.meta.env.VITE_DASHSCOPE_API_KEY || ''
-            };
-        } else {
-            window.__ENV__ = {};
-        }
+        // Vercel replaces %VITE_DASHSCOPE_API_KEY% with the actual value during build/deploy
+        window.__ENV__ = {
+            VITE_DASHSCOPE_API_KEY: '%VITE_DASHSCOPE_API_KEY%' !== '%VITE_DASHSCOPE_API_KEY%' 
+                ? '%VITE_DASHSCOPE_API_KEY%' 
+                : ''
+        };
     </script>
 
     <script>
