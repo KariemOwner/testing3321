@@ -29,11 +29,19 @@
             --gradient-6: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
         }
 
+        [data-theme="light"] {
+            --dark: #ffffff;
+            --dark-light: #f1f5f9;
+            --light: #0f172a;
+            --gray: #64748b;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--dark);
             color: var(--light);
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
 
@@ -130,9 +138,18 @@
             transition: all 0.3s ease;
         }
 
+        [data-theme="light"] nav {
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
         nav.scrolled {
             padding: 1rem 5%;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="light"] nav.scrolled {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
         .logo {
@@ -188,6 +205,30 @@
         .lang-switch {
             display: flex;
             gap: 0.5rem;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            padding: 0.5rem;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--light);
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+            background: var(--gradient-1);
+            border-color: transparent;
         }
 
         .lang-btn {
@@ -547,9 +588,18 @@
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
+        [data-theme="light"] .section-subtitle {
+            color: #475569;
+            text-shadow: none;
+        }
+
         /* About Section */
         .about {
             background: rgba(30, 41, 59, 0.5);
+        }
+
+        [data-theme="light"] .about {
+            background: rgba(241, 245, 249, 0.5);
         }
 
         .about-content {
@@ -567,6 +617,11 @@
             color: #cbd5e1;
             margin-bottom: 2rem;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="light"] .about-text p {
+            color: #475569;
+            text-shadow: none;
         }
 
         .skills-container {
@@ -1300,6 +1355,10 @@
             z-index: 1000;
         }
 
+        [data-theme="light"] .mobile-menu {
+            background: rgba(255, 255, 255, 0.98);
+        }
+
         .mobile-menu.active {
             right: 0;
         }
@@ -1787,6 +1846,9 @@
             <li><a href="#contact" data-en="Contact" data-id="Kontak">Contact</a></li>
         </ul>
         <div class="lang-switch">
+            <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                <i class="fas fa-sun"></i>
+            </button>
             <button class="lang-btn active" data-lang="en">EN</button>
             <button class="lang-btn" data-lang="id">ID</button>
         </div>
@@ -2818,6 +2880,34 @@
 
         // YouTube Video Player Function - REMOVED (now using direct links)
         // No JavaScript needed - videos open via direct YouTube links
+
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // Check for saved theme preference or default to dark
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        if (currentTheme === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            
+            if (isLight) {
+                document.documentElement.removeAttribute('data-theme');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        });
 
     </script>
 </body>
