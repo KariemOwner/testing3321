@@ -2172,15 +2172,15 @@
             window.__ENV__ = {};
         }
         
-        // For Vercel deployment: Set VITE_DASHSCOPE_API_KEY as an environment variable in Vercel Dashboard
-        // Go to: Project Settings > Environment Variables > Add VITE_DASHSCOPE_API_KEY
+        // For Vercel deployment: Set DASHSCOPE_API_KEY as an environment variable in Vercel Dashboard
+        // Go to: Project Settings > Environment Variables > Add DASHSCOPE_API_KEY
         // Note: This static site reads the API key at runtime from window.__ENV__
         
         // Import config to load API key
         import('./config.js').then(module => {
             // Update window.__ENV__ with the API key from config.js
             if (module.QWEN_API_KEY) {
-                window.__ENV__.VITE_DASHSCOPE_API_KEY = module.QWEN_API_KEY;
+                window.__ENV__.DASHSCOPE_API_KEY = module.QWEN_API_KEY;
                 console.log('KarAI: ✓ API key loaded successfully');
             } else {
                 console.log('KarAI: ⚠ No API key found - using fallback responses only');
@@ -2611,20 +2611,20 @@
         });
 
         // Qwen API Configuration - Loaded from config.js
-        // API key is read from environment variables (VITE_DASHSCOPE_API_KEY)
+        // API key is read from environment variables (DASHSCOPE_API_KEY)
         const QWEN_API_URL = 'https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
         const QWEN_MODEL = 'qwen-flash';
         
         // Get API key from window.__ENV__ (populated by config.js module import)
         // Wait a bit for the module to load the API key
-        let QWEN_API_KEY = window?.__ENV__?.VITE_DASHSCOPE_API_KEY || '';
+        let QWEN_API_KEY = window?.__ENV__?.DASHSCOPE_API_KEY || '';
         
         // Debug logging
         console.log('KarAI: Initial API Key status:', QWEN_API_KEY ? 'Present' : 'Not found');
 
         async function getQwenResponse(message, lang) {
             // Re-check API key at call time (in case it was loaded asynchronously)
-            const currentApiKey = window?.__ENV__?.VITE_DASHSCOPE_API_KEY || QWEN_API_KEY;
+            const currentApiKey = window?.__ENV__?.DASHSCOPE_API_KEY || QWEN_API_KEY;
             
             const systemPrompt = lang === 'id' 
                 ? 'Anda adalah KarAI, AI Demo Prototype yang menggunakan Otak Qwen Alibaba. Anda adalah asisten AI yang ramah dan membantu. Jawablah dengan singkat, jelas, dan dalam bahasa Indonesia.'

@@ -14,7 +14,6 @@ if (typeof window !== 'undefined' && window.__ENV__) {
     // Try different possible variable names
     apiKey = window.__ENV__.DASHSCOPE_API_KEY || 
              window.__ENV__.VITE_DASHSCOPE_API_KEY || 
-             window.__ENV__.DASHSCOPE_API_KEY ||
              '';
     if (apiKey) {
         console.log('KarAI Config: API key found in window.__ENV__');
@@ -29,17 +28,9 @@ if (!apiKey && typeof process !== 'undefined' && process.env) {
     }
 }
 
-// Fallback: Check for import.meta.env (Vite/browser build - won't work without bundler)
-if (!apiKey && typeof import.meta !== 'undefined' && import.meta.env) {
-    apiKey = import.meta.env.DASHSCOPE_API_KEY || import.meta.env.VITE_DASHSCOPE_API_KEY || '';
-    if (apiKey) {
-        console.log('KarAI Config: API key found in import.meta.env');
-    }
-}
-
 const QWEN_API_KEY = apiKey;
 
 console.log('KarAI Config: API Key status:', apiKey ? '✓ Loaded' : '✗ Not found - will use fallback responses only');
-console.log('KarAI Config: To enable AI responses, add DASHSCOPE_API_KEY or VITE_DASHSCOPE_API_KEY to Vercel Environment Variables');
+console.log('KarAI Config: To enable AI responses, add DASHSCOPE_API_KEY to Vercel Environment Variables');
 
 export { QWEN_API_URL, QWEN_MODEL, QWEN_API_KEY };
