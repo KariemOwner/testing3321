@@ -912,7 +912,7 @@
             border-radius: 20px;
             overflow: hidden;
             border: 1px solid rgba(99, 102, 241, 0.2);
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
             opacity: 0;
             transform: translateY(50px);
             position: relative;
@@ -924,8 +924,8 @@
         }
 
         .project-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            box-shadow: 0 30px 60px rgba(99, 102, 241, 0.4);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.3);
         }
 
         .project-image {
@@ -956,59 +956,49 @@
             opacity: 0;
             transition: opacity 0.4s ease;
             pointer-events: none;
+            display: none; /* Hidden - not used anymore */
         }
 
-        .project-card:hover .project-video-container,
-        .project-card.playing .project-video-container {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .project-video-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .project-overlay {
+        .project-link-btn {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(99, 102, 241, 0.9);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1rem;
+            background: rgba(99, 102, 241, 0.8);
             opacity: 0;
-            transition: opacity 0.4s ease;
-            cursor: pointer;
+            transition: opacity 0.3s ease;
+            text-decoration: none;
+            z-index: 10;
         }
 
-        .project-card:hover .project-overlay,
-        .project-card.playing .project-overlay {
-            opacity: 0;
+        .project-card:hover .project-link-btn {
+            opacity: 1;
         }
 
         .project-link {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary);
-            font-size: 1.2rem;
+            color: #ff0000;
+            font-size: 1.5rem;
             transition: all 0.3s ease;
             text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         .project-link:hover {
-            transform: scale(1.2) rotate(10deg);
-            background: var(--secondary);
+            transform: scale(1.15);
+            background: #ff0000;
             color: white;
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
         }
 
         .project-content {
@@ -1973,13 +1963,13 @@
         
         <div class="projects-grid">
             <!-- Project 1: AI Chatbot with NLP -->
-            <div class="project-card fade-in" data-video-id="T5kmX4JyOgE">
+            <div class="project-card fade-in" data-video-id="f8w0wG5S6u4">
                 <div class="project-image">
                     <div style="width:100%;height:100%;background:var(--gradient-1);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;"><i class="fas fa-brain"></i></div>
                     <div class="project-video-container"></div>
-                    <div class="project-overlay" onclick="playVideo(this)">
-                        <span class="project-link"><i class="fas fa-play"></i></span>
-                    </div>
+                    <a href="https://www.youtube.com/watch?v=f8w0wG5S6u4" target="_blank" class="project-link-btn">
+                        <span class="project-link"><i class="fab fa-youtube"></i></span>
+                    </a>
                 </div>
                 <div class="project-content">
                     <h3 class="project-title" data-en="AI Chatbot with NLP" data-id="Chatbot AI dengan NLP">Chatbot AI dengan NLP</h3>
@@ -1994,13 +1984,13 @@
             </div>
             
             <!-- Project 2: Network Configuration Tool -->
-            <div class="project-card fade-in" data-video-id="W1vM3mYJGf0">
+            <div class="project-card fade-in" data-video-id="3K8vC1gRk0o">
                 <div class="project-image">
                     <div style="width:100%;height:100%;background:var(--gradient-2);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;"><i class="fas fa-network-wired"></i></div>
                     <div class="project-video-container"></div>
-                    <div class="project-overlay" onclick="playVideo(this)">
-                        <span class="project-link"><i class="fas fa-play"></i></span>
-                    </div>
+                    <a href="https://www.youtube.com/watch?v=3K8vC1gRk0o" target="_blank" class="project-link-btn">
+                        <span class="project-link"><i class="fab fa-youtube"></i></span>
+                    </a>
                 </div>
                 <div class="project-content">
                     <h3 class="project-title" data-en="Network Configuration Tool" data-id="Alat Konfigurasi Jaringan">Alat Konfigurasi Jaringan</h3>
@@ -2015,13 +2005,13 @@
             </div>
             
             <!-- Project 3: Windows Server Management -->
-            <div class="project-card fade-in" data-video-id="rZMzHh85eKE">
+            <div class="project-card fade-in" data-video-id="1KLEwXbS8gU">
                 <div class="project-image">
                     <div style="width:100%;height:100%;background:var(--gradient-3);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;"><i class="fas fa-server"></i></div>
                     <div class="project-video-container"></div>
-                    <div class="project-overlay" onclick="playVideo(this)">
-                        <span class="project-link"><i class="fas fa-play"></i></span>
-                    </div>
+                    <a href="https://www.youtube.com/watch?v=1KLEwXbS8gU" target="_blank" class="project-link-btn">
+                        <span class="project-link"><i class="fab fa-youtube"></i></span>
+                    </a>
                 </div>
                 <div class="project-content">
                     <h3 class="project-title" data-en="Windows Server Management" data-id="Manajemen Windows Server">Manajemen Windows Server</h3>
@@ -2040,9 +2030,9 @@
                 <div class="project-image">
                     <div style="width:100%;height:100%;background:var(--gradient-4);display:flex;align-items:center;justify-content:center;font-size:3rem;color:white;"><i class="fas fa-desktop"></i></div>
                     <div class="project-video-container"></div>
-                    <div class="project-overlay" onclick="playVideo(this)">
-                        <span class="project-link"><i class="fas fa-play"></i></span>
-                    </div>
+                    <a href="https://www.youtube.com/watch?v=BL5HYj6G8fQ" target="_blank" class="project-link-btn">
+                        <span class="project-link"><i class="fab fa-youtube"></i></span>
+                    </a>
                 </div>
                 <div class="project-content">
                     <h3 class="project-title" data-en="Custom PC Build Configurator" data-id="Konfigurator Rakit PC">Konfigurator Rakit PC</h3>
@@ -2057,13 +2047,13 @@
             </div>
             
             <!-- Project 5: Network Security Scanner -->
-            <div class="project-card fade-in" data-video-id="1HKpXJcQ7xM">
+            <div class="project-card fade-in" data-video-id="2p8wKz7k9gQ">
                 <div class="project-image">
                     <div style="width:100%;height:100%;background:var(--gradient-5);display:flex;align-items:center;justify-content:center;font-size:3rem;color:#333;"><i class="fas fa-shield-alt"></i></div>
                     <div class="project-video-container"></div>
-                    <div class="project-overlay" onclick="playVideo(this)">
-                        <span class="project-link"><i class="fas fa-play"></i></span>
-                    </div>
+                    <a href="https://www.youtube.com/watch?v=2p8wKz7k9gQ" target="_blank" class="project-link-btn">
+                        <span class="project-link"><i class="fab fa-youtube"></i></span>
+                    </a>
                 </div>
                 <div class="project-content">
                     <h3 class="project-title" data-en="Network Security Scanner" data-id="Pemindai Keamanan Jaringan">Pemindai Keamanan Jaringan</h3>
@@ -2078,13 +2068,13 @@
             </div>
             
             <!-- Project 6: AI Image Classifier -->
-            <div class="project-card fade-in" data-video-id="yR0LFzLfSvE">
+            <div class="project-card fade-in" data-video-id="tL923m0jWfU">
                 <div class="project-image">
                     <div style="width:100%;height:100%;background:var(--gradient-6);display:flex;align-items:center;justify-content:center;font-size:3rem;color:#333;"><i class="fas fa-robot"></i></div>
                     <div class="project-video-container"></div>
-                    <div class="project-overlay" onclick="playVideo(this)">
-                        <span class="project-link"><i class="fas fa-play"></i></span>
-                    </div>
+                    <a href="https://www.youtube.com/watch?v=tL923m0jWfU" target="_blank" class="project-link-btn">
+                        <span class="project-link"><i class="fab fa-youtube"></i></span>
+                    </a>
                 </div>
                 <div class="project-content">
                     <h3 class="project-title" data-en="AI Image Classifier" data-id="Klasifier Gambar AI">Klasifier Gambar AI</h3>
@@ -2826,57 +2816,8 @@
             });
         };
 
-        // YouTube Video Player Function
-        function playVideo(element) {
-            const projectCard = element.closest('.project-card');
-            const videoContainer = projectCard.querySelector('.project-video-container');
-            const videoId = projectCard.getAttribute('data-video-id');
-            
-            // Check if video is already playing
-            if (projectCard.classList.contains('playing')) {
-                // Stop video - remove iframe
-                videoContainer.innerHTML = '';
-                projectCard.classList.remove('playing');
-            } else {
-                // Stop any other playing videos first
-                document.querySelectorAll('.project-card.playing').forEach(card => {
-                    card.querySelector('.project-video-container').innerHTML = '';
-                    card.classList.remove('playing');
-                });
-                
-                // Play this video
-                videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-                projectCard.classList.add('playing');
-            }
-        }
-
-        // Hover to preview video
-        document.querySelectorAll('.project-card').forEach(card => {
-            let hoverTimeout;
-            
-            card.addEventListener('mouseenter', () => {
-                hoverTimeout = setTimeout(() => {
-                    const videoContainer = card.querySelector('.project-video-container');
-                    const videoId = card.getAttribute('data-video-id');
-                    
-                    // Only show on hover if not already playing
-                    if (!card.classList.contains('playing')) {
-                        videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0" allow="encrypted-media" allowfullscreen></iframe>`;
-                        card.classList.add('hover-preview');
-                    }
-                }, 500); // Show after 500ms hover
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                clearTimeout(hoverTimeout);
-                // Only remove hover preview if not clicked to play
-                if (!card.classList.contains('playing')) {
-                    const videoContainer = card.querySelector('.project-video-container');
-                    videoContainer.innerHTML = '';
-                    card.classList.remove('hover-preview');
-                }
-            });
-        });
+        // YouTube Video Player Function - REMOVED (now using direct links)
+        // No JavaScript needed - videos open via direct YouTube links
 
     </script>
 </body>
