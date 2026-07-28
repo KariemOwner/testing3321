@@ -2172,25 +2172,18 @@
             window.__ENV__ = {};
         }
         
-        // Inject environment variables for Vercel deployment
-        // The API key will be available via window.__ENV__
-        // IMPORTANT: Make sure you set VITE_DASHSCOPE_API_KEY in Vercel Environment Variables
-        if (typeof process !== 'undefined' && process.env?.VITE_DASHSCOPE_API_KEY) {
-            window.__ENV__.VITE_DASHSCOPE_API_KEY = process.env.VITE_DASHSCOPE_API_KEY;
-            console.log('KarAI: API key loaded from process.env');
-        } else if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_DASHSCOPE_API_KEY) {
-            window.__ENV__.VITE_DASHSCOPE_API_KEY = import.meta.env.VITE_DASHSCOPE_API_KEY;
-            console.log('KarAI: API key loaded from import.meta.env');
-        }
+        // For Vercel deployment: Set VITE_DASHSCOPE_API_KEY as an environment variable in Vercel Dashboard
+        // Go to: Project Settings > Environment Variables > Add VITE_DASHSCOPE_API_KEY
+        // Note: This static site reads the API key at runtime from window.__ENV__
         
-        // Import config to ensure API key is loaded from all possible sources
+        // Import config to load API key
         import('./config.js').then(module => {
             // Update window.__ENV__ with the API key from config.js
             if (module.QWEN_API_KEY) {
                 window.__ENV__.VITE_DASHSCOPE_API_KEY = module.QWEN_API_KEY;
-                console.log('KarAI: ✓ API key loaded successfully from config.js');
+                console.log('KarAI: ✓ API key loaded successfully');
             } else {
-                console.log('KarAI: ⚠ No API key found in config.js');
+                console.log('KarAI: ⚠ No API key found - using fallback responses only');
             }
         }).catch(err => {
             console.log('KarAI: Config module load error:', err.message);

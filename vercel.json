@@ -2,6 +2,7 @@
   "buildCommand": "echo 'No build needed for static site'",
   "outputDirectory": ".",
   "env": {
+    "DASHSCOPE_API_KEY": "@dashscope-api-key",
     "VITE_DASHSCOPE_API_KEY": "@vite-dashscope-api-key"
   }
 }
