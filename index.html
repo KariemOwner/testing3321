@@ -36,72 +36,7 @@
             overflow-x: hidden;
         }
 
-        /* Custom Cursor - Desktop only */
-        @media (hover: hover) and (pointer: fine) {
-            body, a, button, input, textarea, select, [role="button"], .cursor-hover {
-                cursor: none !important;
-            }
 
-            .cursor {
-                width: 40px;
-                height: 40px;
-                border: 2px solid var(--primary);
-                border-radius: 50%;
-                position: fixed;
-                pointer-events: none;
-                z-index: 999999;
-                transition: transform 0.15s ease, background 0.3s ease, border-color 0.3s ease;
-                mix-blend-mode: difference;
-                box-shadow: 0 0 20px rgba(99, 102, 241, 0.5), inset 0 0 10px rgba(99, 102, 241, 0.3);
-                transform: translate(-50%, -50%);
-            }
-
-            .cursor-dot {
-                width: 8px;
-                height: 8px;
-                background: var(--secondary);
-                border-radius: 50%;
-                position: fixed;
-                pointer-events: none;
-                z-index: 999999;
-                box-shadow: 0 0 10px rgba(236, 72, 153, 0.8);
-                transform: translate(-50%, -50%);
-            }
-
-            .cursor-trail {
-                position: fixed;
-                width: 10px;
-                height: 10px;
-                background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: 999998;
-                opacity: 0.6;
-                transform: translate(-50%, -50%);
-            }
-
-            .cursor.hover {
-                transform: translate(-50%, -50%) scale(1.5);
-                background: rgba(99, 102, 241, 0.2);
-                border-color: var(--secondary);
-                box-shadow: 0 0 30px rgba(236, 72, 153, 0.6), inset 0 0 20px rgba(236, 72, 153, 0.4);
-            }
-
-            .cursor.click {
-                transform: translate(-50%, -50%) scale(0.8);
-                background: rgba(236, 72, 153, 0.4);
-            }
-        }
-
-        @media (hover: none) or (pointer: coarse) {
-            .cursor, .cursor-dot, .cursor-trail {
-                display: none !important;
-            }
-            
-            body, a, button, input, textarea, select, [role="button"] {
-                cursor: auto !important;
-            }
-        }
 
         body::before {
             content: '';
@@ -1823,11 +1758,6 @@
         </div>
     </div>
 
-    <!-- Custom Cursor -->
-    <div class="cursor"></div>
-    <div class="cursor-dot"></div>
-    <div id="cursor-trails"></div>
-
     <!-- Scroll Progress -->
     <div class="scroll-progress"></div>
 
@@ -2808,93 +2738,6 @@
             });
         };
 
-        // Custom Cursor - Enhanced with trail effect and click animation
-        const cursor = document.querySelector('.cursor');
-        const cursorDot = document.querySelector('.cursor-dot');
-        const trailsContainer = document.getElementById('cursor-trails');
-
-        if (cursor && cursorDot) {
-            let lastX = 0, lastY = 0;
-            let mouseX = window.innerWidth / 2;
-            let mouseY = window.innerHeight / 2;
-
-            // Smooth cursor movement with lerp
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-                
-                // Instant follow for dot
-                cursorDot.style.left = mouseX + 'px';
-                cursorDot.style.top = mouseY + 'px';
-                
-                // Create trail effect
-                const distance = Math.sqrt(Math.pow(mouseX - lastX, 2) + Math.pow(mouseY - lastY, 2));
-                if (distance > 10) {
-                    createTrail(mouseX, mouseY);
-                    lastX = mouseX;
-                    lastY = mouseY;
-                }
-            });
-            
-            // Animation loop for smooth cursor ring movement
-            function animateCursor() {
-                const lerp = (a, b, t) => a + (b - a) * t;
-                
-                const currentLeft = parseFloat(cursor.style.left) || mouseX;
-                const currentTop = parseFloat(cursor.style.top) || mouseY;
-                
-                cursor.style.left = lerp(currentLeft, mouseX, 0.2) + 'px';
-                cursor.style.top = lerp(currentTop, mouseY, 0.2) + 'px';
-                
-                requestAnimationFrame(animateCursor);
-            }
-            animateCursor();
-
-            // Trail creation function
-            function createTrail(x, y) {
-                const trail = document.createElement('div');
-                trail.className = 'cursor-trail';
-                trail.style.left = x + 'px';
-                trail.style.top = y + 'px';
-                trail.style.animation = 'trailFade 0.5s ease forwards';
-                trailsContainer.appendChild(trail);
-                
-                setTimeout(() => {
-                    trail.remove();
-                }, 500);
-            }
-
-            // Click effect
-            document.addEventListener('mousedown', () => {
-                cursor.classList.add('click');
-            });
-
-            document.addEventListener('mouseup', () => {
-                cursor.classList.remove('click');
-            });
-
-            // Add cursor-hover class to all interactive elements
-            const interactiveElements = document.querySelectorAll('a, button, input, textarea, select, [role="button"], .skill-tag, .project-link, .lang-btn, .logo, .mobile-menu-btn, .scroll-top, .ai-chat-btn, .karai-close, .karai-input-area button');
-            
-            interactiveElements.forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    cursor.classList.add('hover');
-                });
-                el.addEventListener('mouseleave', () => {
-                    cursor.classList.remove('hover');
-                });
-            });
-        }
-
-        // Add trail fade animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes trailFade {
-                0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
-                100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
