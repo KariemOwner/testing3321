@@ -1,5 +1,6 @@
-// Dino Game - Chrome Offline Style
-// Complete implementation with smooth gameplay
+// Dino Game - Premium Edition
+// Enhanced graphics, smooth animations, bug-free on desktop & Android
+// Complete animation isolation from main website
 
 class DinoGame {
     constructor() {
@@ -11,11 +12,12 @@ class DinoGame {
         this.gameOver = false;
         this.score = 0;
         this.highScore = parseInt(localStorage.getItem('dinoHighScore')) || 0;
-        this.gameSpeed = 6;
-        this.gravity = 0.6;
-        this.jumpForce = -12;
+        this.gameSpeed = 7;
+        this.baseSpeed = 7;
+        this.gravity = 0.7;
+        this.jumpForce = -13;
         
-        // Dino properties
+        // Dino properties - Enhanced
         this.dino = {
             x: 50,
             y: 0,
@@ -25,14 +27,16 @@ class DinoGame {
             isJumping: false,
             isDucking: false,
             frame: 0,
-            frameTimer: 0
+            frameTimer: 0,
+            blinkTimer: 0,
+            isBlinking: false
         };
         
         // Obstacles
         this.obstacles = [];
         this.obstacleTimer = 0;
-        this.minObstacleGap = 60;
-        this.maxObstacleGap = 140;
+        this.minObstacleGap = 70;
+        this.maxObstacleGap = 150;
         
         // Clouds
         this.clouds = [];
@@ -42,6 +46,14 @@ class DinoGame {
         this.groundY = 0;
         this.groundOffset = 0;
         
+        // Particles
+        this.particles = [];
+        
+        // Stars for night mode
+        this.stars = [];
+        this.isNightMode = false;
+        this.nightTimer = 0;
+        
         // Animation
         this.animationId = null;
         this.lastTime = 0;
@@ -49,12 +61,28 @@ class DinoGame {
         // Touch controls
         this.touchStartY = 0;
         this.touchStartTime = 0;
+        this.touchStartX = 0;
+        
+        // Responsive
+        this.canvasWidth = 800;
+        this.canvasHeight = 350;
+        this.scale = 1;
     }
     
     init() {
         this.createGameButton();
         this.createGameContainer();
         this.setupEventListeners();
+        this.loadHighScore();
+    }
+    
+    loadHighScore() {
+        try {
+            const saved = localStorage.getItem('dinoHighScore');
+            this.highScore = saved ? parseInt(saved) : 0;
+        } catch (e) {
+            this.highScore = 0;
+        }
     }
     
     createGameButton() {
@@ -66,35 +94,68 @@ class DinoGame {
         
         const style = document.createElement('style');
         style.textContent = `
+            /* ANIMATION ISOLATION - Reset all animations inside game */
+            #dino-game-container,
+            #dino-game-container *,
+            #dino-game-container *::before,
+            #dino-game-container *::after {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+            }
+            
+            #dino-game-container .close-btn,
+            #dino-game-btn {
+                transition: all 0.3s ease !important;
+            }
+            
             #dino-game-btn {
                 position: fixed;
                 bottom: 20px;
                 left: 20px;
-                width: 60px;
-                height: 60px;
+                width: 65px;
+                height: 65px;
                 border-radius: 50%;
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                border: 3px solid rgba(255, 255, 255, 0.3);
+                border: 3px solid rgba(255, 255, 255, 0.4);
                 color: white;
-                font-size: 28px;
+                font-size: 32px;
                 cursor: pointer;
-                z-index: 9998;
+                z-index: 99998;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-                animation: pulse 2s ease-in-out infinite;
+                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5), 
+                            inset 0 2px 10px rgba(255, 255, 255, 0.3);
+                overflow: hidden;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            #dino-game-btn::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+            
+            #dino-game-btn:hover::before {
+                opacity: 1;
             }
             
             #dino-game-btn:hover {
-                transform: scale(1.1) rotate(5deg);
-                box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+                box-shadow: 0 8px 30px rgba(102, 126, 234, 0.7),
+                            inset 0 2px 10px rgba(255, 255, 255, 0.4);
+                transform: scale(1.08);
             }
             
-            @keyframes pulse {
-                0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.05); }
+            #dino-game-btn:active {
+                transform: scale(0.95);
             }
             
             #dino-game-container {
@@ -103,13 +164,16 @@ class DinoGame {
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(0, 0, 0, 0.85);
-                backdrop-filter: blur(10px);
-                z-index: 9999;
+                background: rgba(0, 0, 0, 0.92);
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+                z-index: 99999;
                 display: none;
                 align-items: center;
                 justify-content: center;
                 flex-direction: column;
+                overscroll-behavior: contain;
+                touch-action: none;
             }
             
             #dino-game-container.active {
@@ -118,31 +182,37 @@ class DinoGame {
             
             .game-wrapper {
                 position: relative;
-                border-radius: 10px;
+                border-radius: 15px;
                 overflow: hidden;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6),
+                            0 0 0 1px rgba(255, 255, 255, 0.1);
+                background: #000;
             }
             
             #dino-canvas {
                 display: block;
-                background: linear-gradient(180deg, #f7f7f7 0%, #ffffff 100%);
-                border-radius: 10px;
+                border-radius: 15px;
+                image-rendering: pixelated;
+                image-rendering: crisp-edges;
             }
             
             .game-ui {
                 position: absolute;
-                top: 20px;
+                top: 15px;
                 right: 20px;
-                font-family: 'Courier New', monospace;
-                font-size: 20px;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 22px;
+                font-weight: bold;
                 color: #535353;
                 text-align: right;
+                pointer-events: none;
+                text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
             }
             
             .high-score {
-                font-size: 14px;
-                color: #acacac;
-                margin-top: 5px;
+                font-size: 15px;
+                color: #888;
+                margin-top: 4px;
             }
             
             .game-message {
@@ -151,86 +221,135 @@ class DinoGame {
                 left: 50%;
                 transform: translate(-50%, -50%);
                 text-align: center;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+                pointer-events: none;
             }
             
             .game-message h2 {
-                font-size: 32px;
-                color: #535353;
-                margin-bottom: 10px;
+                font-size: 42px;
+                font-weight: 800;
+                color: #333;
+                margin: 0 0 15px 0;
+                letter-spacing: 3px;
+                text-transform: uppercase;
+                text-shadow: 2px 2px 0 rgba(255,255,255,0.3);
             }
             
             .game-message p {
-                font-size: 16px;
-                color: #757575;
+                font-size: 18px;
+                color: #666;
+                margin: 8px 0;
             }
             
             .close-btn {
                 position: absolute;
-                top: 20px;
-                left: 20px;
-                width: 40px;
-                height: 40px;
+                top: 15px;
+                left: 15px;
+                width: 45px;
+                height: 45px;
                 border-radius: 50%;
-                background: rgba(255, 255, 255, 0.2);
-                border: 2px solid rgba(255, 255, 255, 0.3);
+                background: rgba(255, 255, 255, 0.15);
+                border: 2px solid rgba(255, 255, 255, 0.4);
                 color: white;
-                font-size: 20px;
+                font-size: 24px;
+                font-weight: bold;
                 cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                transition: all 0.3s ease;
+                z-index: 100;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
             }
             
             .close-btn:hover {
-                background: rgba(255, 255, 255, 0.3);
-                transform: rotate(90deg);
+                background: rgba(255, 255, 255, 0.25);
+                border-color: rgba(255, 255, 255, 0.6);
+            }
+            
+            .close-btn:active {
+                transform: scale(0.9);
             }
             
             .controls-hint {
                 position: absolute;
-                bottom: 20px;
+                bottom: 25px;
                 left: 50%;
                 transform: translateX(-50%);
-                color: rgba(255, 255, 255, 0.7);
-                font-size: 14px;
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 13px;
                 text-align: center;
+                pointer-events: none;
             }
             
             .controls-hint span {
                 display: inline-block;
-                margin: 0 10px;
-                padding: 5px 10px;
+                margin: 0 8px;
+                padding: 6px 12px;
                 background: rgba(255, 255, 255, 0.1);
-                border-radius: 5px;
+                border-radius: 6px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+            }
+            
+            /* Mobile responsive */
+            @media (max-width: 768px) {
+                #dino-game-btn {
+                    bottom: 15px;
+                    left: 15px;
+                    width: 55px;
+                    height: 55px;
+                    font-size: 26px;
+                }
+                
+                .game-message h2 {
+                    font-size: 32px;
+                }
+                
+                .game-message p {
+                    font-size: 15px;
+                }
+                
+                .controls-hint {
+                    font-size: 11px;
+                    bottom: 15px;
+                }
+                
+                .controls-hint span {
+                    padding: 4px 8px;
+                    margin: 0 4px;
+                }
             }
         `;
         document.head.appendChild(style);
         
         button.addEventListener('click', () => this.toggleGame());
+        button.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.toggleGame();
+        }, { passive: false });
     }
     
     createGameContainer() {
         const container = document.createElement('div');
         container.id = 'dino-game-container';
         container.innerHTML = `
-            <button class="close-btn" id="dino-close-btn">&times;</button>
+            <button class="close-btn" id="dino-close-btn" aria-label="Close game">&times;</button>
             <div class="game-wrapper">
-                <canvas id="dino-canvas" width="800" height="300"></canvas>
+                <canvas id="dino-canvas"></canvas>
                 <div class="game-ui">
                     <div id="score-display">00000</div>
                     <div class="high-score">HI ${this.formatScore(this.highScore)}</div>
                 </div>
                 <div class="game-message" id="game-message">
-                    <h2>DINO GAME</h2>
-                    <p>Press SPACE or TAP to start</p>
+                    <h2>DINO RUN</h2>
+                    <p>🎮 Press SPACE or TAP to Start</p>
                 </div>
             </div>
             <div class="controls-hint">
-                <span>SPACE / ↑ to Jump</span>
-                <span>↓ to Duck</span>
-                <span>TAP on mobile</span>
+                <span>⌨️ SPACE/↑ Jump</span>
+                <span>⬇️ Duck</span>
+                <span>👆 Tap Mobile</span>
+                <span>⏸️ P Pause</span>
             </div>
         `;
         document.body.appendChild(container);
@@ -238,9 +357,35 @@ class DinoGame {
         this.gameContainer = container;
         this.canvas = document.getElementById('dino-canvas');
         this.ctx = this.canvas.getContext('2d');
-        this.groundY = this.canvas.height - 30;
+        
+        // Setup responsive canvas
+        this.setupCanvasSize();
         
         document.getElementById('dino-close-btn').addEventListener('click', () => this.toggleGame());
+        document.getElementById('dino-close-btn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            this.toggleGame();
+        }, { passive: false });
+    }
+    
+    setupCanvasSize() {
+        // Responsive canvas sizing
+        const maxWidth = Math.min(window.innerWidth - 40, 900);
+        const maxHeight = Math.min(window.innerHeight - 150, 400);
+        
+        this.canvasWidth = maxWidth;
+        this.canvasHeight = Math.max(300, maxHeight);
+        
+        // Handle high DPI displays
+        const dpr = window.devicePixelRatio || 1;
+        this.canvas.style.width = this.canvasWidth + 'px';
+        this.canvas.style.height = this.canvasHeight + 'px';
+        this.canvas.width = this.canvasWidth * dpr;
+        this.canvas.height = this.canvasHeight * dpr;
+        this.ctx.scale(dpr, dpr);
+        
+        this.scale = dpr;
+        this.groundY = this.canvasHeight - 40;
     }
     
     setupEventListeners() {
@@ -248,16 +393,28 @@ class DinoGame {
         document.addEventListener('keydown', (e) => this.handleKeyDown(e));
         document.addEventListener('keyup', (e) => this.handleKeyUp(e));
         
-        // Touch controls
-        this.canvas.addEventListener('touchstart', (e) => this.handleTouchStart(e));
-        this.canvas.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+        // Touch controls - with proper prevention
+        this.canvas.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: false });
+        this.canvas.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
+        this.canvas.addEventListener('touchend', (e) => this.handleTouchEnd(e), { passive: false });
         
-        // Prevent scrolling when playing
-        document.addEventListener('touchmove', (e) => {
-            if (this.isPlaying && this.gameContainer.classList.contains('active')) {
-                e.preventDefault();
+        // Prevent default touch behaviors
+        this.canvas.addEventListener('touchstart', (e) => e.preventDefault(), { passive: false });
+        
+        // Resize handler
+        window.addEventListener('resize', () => {
+            if (this.gameContainer.classList.contains('active')) {
+                this.setupCanvasSize();
+                this.draw();
             }
-        }, { passive: false });
+        });
+        
+        // Visibility change - pause when tab hidden
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && this.isPlaying && !this.isPaused) {
+                this.togglePause();
+            }
+        });
     }
     
     toggleGame() {
