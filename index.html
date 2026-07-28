@@ -2165,6 +2165,23 @@
         </div>
     </div>
 
+    <!-- Load config first to inject environment variables -->
+    <script>
+        // Inject environment variables for Vercel deployment
+        // The API key will be available via window.__ENV__
+        if (typeof process !== 'undefined' && process.env) {
+            window.__ENV__ = {
+                DASHSCOPE_API_KEY: process.env.DASHSCOPE_API_KEY || ''
+            };
+        } else if (typeof import.meta !== 'undefined' && import.meta.env) {
+            window.__ENV__ = {
+                DASHSCOPE_API_KEY: import.meta.env.VITE_DASHSCOPE_API_KEY || ''
+            };
+        } else {
+            window.__ENV__ = {};
+        }
+    </script>
+
     <script>
         // Language Switcher
         let currentLang = localStorage.getItem('lang') || 'en';
@@ -2585,13 +2602,13 @@
             }
         });
 
-        // Qwen API Configuration
+        // Qwen API Configuration - Loaded from config.js
+        // API key is read from environment variables (DASHSCOPE_API_KEY)
         const QWEN_API_URL = 'https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation';
         const QWEN_MODEL = 'qwen-flash';
         
-        // Note: For security reasons, API key should be handled server-side in production
-        // This is a demo prototype - replace with your actual API key or use a backend proxy
-        const QWEN_API_KEY = ''; // Add your DashScope API key here
+        // Get API key from window.__ENV__ (injected by Vercel) or fallback to empty string
+        const QWEN_API_KEY = window?.__ENV__?.DASHSCOPE_API_KEY || '';
 
         async function getQwenResponse(message, lang) {
             const systemPrompt = lang === 'id' 
