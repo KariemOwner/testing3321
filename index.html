@@ -53,6 +53,7 @@
                 transition: transform 0.15s ease, background 0.3s ease, border-color 0.3s ease;
                 mix-blend-mode: difference;
                 box-shadow: 0 0 20px rgba(99, 102, 241, 0.5), inset 0 0 10px rgba(99, 102, 241, 0.3);
+                transform: translate(-50%, -50%);
             }
 
             .cursor-dot {
@@ -64,6 +65,7 @@
                 pointer-events: none;
                 z-index: 999999;
                 box-shadow: 0 0 10px rgba(236, 72, 153, 0.8);
+                transform: translate(-50%, -50%);
             }
 
             .cursor-trail {
@@ -75,17 +77,18 @@
                 pointer-events: none;
                 z-index: 999998;
                 opacity: 0.6;
+                transform: translate(-50%, -50%);
             }
 
             .cursor.hover {
-                transform: scale(1.5);
+                transform: translate(-50%, -50%) scale(1.5);
                 background: rgba(99, 102, 241, 0.2);
                 border-color: var(--secondary);
                 box-shadow: 0 0 30px rgba(236, 72, 153, 0.6), inset 0 0 20px rgba(236, 72, 153, 0.4);
             }
 
             .cursor.click {
-                transform: scale(0.8);
+                transform: translate(-50%, -50%) scale(0.8);
                 background: rgba(236, 72, 153, 0.4);
             }
         }
@@ -2812,34 +2815,40 @@
 
         if (cursor && cursorDot) {
             let lastX = 0, lastY = 0;
-            let trailInterval;
+            let mouseX = window.innerWidth / 2;
+            let mouseY = window.innerHeight / 2;
 
             // Smooth cursor movement with lerp
             document.addEventListener('mousemove', (e) => {
-                const targetX = e.clientX;
-                const targetY = e.clientY;
-                
-                // Smooth follow for cursor ring
-                const lerp = (a, b, t) => a + (b - a) * t;
-                
-                const currentLeft = parseFloat(cursor.style.left) || targetX;
-                const currentTop = parseFloat(cursor.style.top) || targetY;
-                
-                cursor.style.left = lerp(currentLeft, targetX, 0.2) + 'px';
-                cursor.style.top = lerp(currentTop, targetY, 0.2) + 'px';
+                mouseX = e.clientX;
+                mouseY = e.clientY;
                 
                 // Instant follow for dot
-                cursorDot.style.left = targetX + 'px';
-                cursorDot.style.top = targetY + 'px';
+                cursorDot.style.left = mouseX + 'px';
+                cursorDot.style.top = mouseY + 'px';
                 
                 // Create trail effect
-                const distance = Math.sqrt(Math.pow(targetX - lastX, 2) + Math.pow(targetY - lastY, 2));
+                const distance = Math.sqrt(Math.pow(mouseX - lastX, 2) + Math.pow(mouseY - lastY, 2));
                 if (distance > 10) {
-                    createTrail(targetX, targetY);
-                    lastX = targetX;
-                    lastY = targetY;
+                    createTrail(mouseX, mouseY);
+                    lastX = mouseX;
+                    lastY = mouseY;
                 }
             });
+            
+            // Animation loop for smooth cursor ring movement
+            function animateCursor() {
+                const lerp = (a, b, t) => a + (b - a) * t;
+                
+                const currentLeft = parseFloat(cursor.style.left) || mouseX;
+                const currentTop = parseFloat(cursor.style.top) || mouseY;
+                
+                cursor.style.left = lerp(currentLeft, mouseX, 0.2) + 'px';
+                cursor.style.top = lerp(currentTop, mouseY, 0.2) + 'px';
+                
+                requestAnimationFrame(animateCursor);
+            }
+            animateCursor();
 
             // Trail creation function
             function createTrail(x, y) {
@@ -2881,8 +2890,8 @@
         const style = document.createElement('style');
         style.textContent = `
             @keyframes trailFade {
-                0% { opacity: 0.6; transform: scale(1); }
-                100% { opacity: 0; transform: scale(0.5); }
+                0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+                100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
             }
         `;
         document.head.appendChild(style);
