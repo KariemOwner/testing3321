@@ -54,6 +54,10 @@
             --border-color: rgba(99, 102, 241, 0.15);
             --contact-link-bg: rgba(99, 102, 241, 0.08);
             --social-bg: rgba(99, 102, 241, 0.08);
+            --modal-bg: rgba(255, 255, 255, 0.95);
+            --mobile-menu-bg: rgba(255, 255, 255, 0.98);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --text-muted: #475569;
         }
 
         body {
@@ -168,11 +172,11 @@
 
         nav.scrolled {
             padding: 1rem 5%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px var(--shadow-color);
         }
 
         [data-theme="light"] nav.scrolled {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px var(--shadow-color);
         }
 
         .logo {
@@ -602,7 +606,7 @@
 
         .section-subtitle {
             text-align: center;
-            color: #cbd5e1;
+            color: var(--text-muted);
             font-size: 1.2rem;
             margin-bottom: 4rem;
             max-width: 600px;
@@ -612,7 +616,6 @@
         }
 
         [data-theme="light"] .section-subtitle {
-            color: #475569;
             text-shadow: none;
         }
 
@@ -637,13 +640,12 @@
         .about-text p {
             font-size: 1.1rem;
             line-height: 1.8;
-            color: #cbd5e1;
+            color: var(--text-muted);
             margin-bottom: 2rem;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         }
 
         [data-theme="light"] .about-text p {
-            color: #475569;
             text-shadow: none;
         }
 
@@ -1060,7 +1062,7 @@
         .project-link {
             width: 60px;
             height: 60px;
-            background: white;
+            background: var(--dark);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1069,7 +1071,11 @@
             font-size: 1.5rem;
             transition: all 0.3s ease;
             text-decoration: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        [data-theme="light"] .project-link {
+            background: var(--dark-light);
         }
 
         .project-link:hover {
@@ -1090,10 +1096,14 @@
         }
 
         .project-description {
-            color: #cbd5e1;
+            color: var(--text-muted);
             line-height: 1.6;
             margin-bottom: 1.5rem;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="light"] .project-description {
+            text-shadow: none;
         }
 
         .project-tech {
@@ -1367,7 +1377,7 @@
             right: -100%;
             width: 80%;
             height: 100vh;
-            background: rgba(15, 23, 42, 0.98);
+            background: var(--mobile-menu-bg);
             backdrop-filter: blur(20px);
             display: flex;
             flex-direction: column;
@@ -1379,7 +1389,7 @@
         }
 
         [data-theme="light"] .mobile-menu {
-            background: rgba(255, 255, 255, 0.98);
+            background: var(--mobile-menu-bg);
         }
 
         .mobile-menu.active {
@@ -1552,7 +1562,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 23, 42, 0.95);
+            background: var(--modal-bg);
             backdrop-filter: blur(10px);
             z-index: 100000;
             display: flex;
@@ -1561,6 +1571,10 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+        }
+
+        [data-theme="light"] .karai-modal {
+            background: var(--modal-bg);
         }
 
         .karai-modal.active {
@@ -1577,8 +1591,8 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px var(--shadow-color);
+            border: 1px solid var(--border-color);
         }
 
         .karai-header {
